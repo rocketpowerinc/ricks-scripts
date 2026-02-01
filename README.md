@@ -1,10 +1,11 @@
 # ricks-scripts
 
 ### Ubuntu Bootstrap Quick Start
-- Simply copy and paste this into terminal, enter your password for sudo and sit back and relax
+1. Simply copy and paste this into terminal
+2. then type `bootstrap` and press enter
 
 ```
-sudo apt install git
+sudo apt install git -y
 
 BASHRC="$HOME/.bashrc"
 ALIAS_NAME="bootstrap"
@@ -16,7 +17,8 @@ if grep -q "^alias ${ALIAS_NAME}=" "$BASHRC"; then
   exit 0
 fi
 
-echo "➕ Adding '${ALIAS_NAME}' alias to ~/.bashrc"
+echo -e "\033[1;32m➕ Adding '${ALIAS_NAME}' alias to ~/.bashrc\033[0m"
+sleep 3
 
 {
   echo
