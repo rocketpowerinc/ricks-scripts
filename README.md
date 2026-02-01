@@ -1,7 +1,7 @@
 # ricks-scripts
 
 ### Ubuntu Bootstrap Quick Start
-1. Copy and paste this code block into terminal and press enter
+1. Copy and paste the code block below into a terminal and press enter
 2. Step two simply type `bootstrap` and press enter
 
 ```
