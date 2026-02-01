@@ -4,7 +4,7 @@ set -e
 # Green text helper + 2 second pause
 green_echo() {
   echo -e "\e[32m$1\e[0m"
-  sleep 2
+  sleep 3
 }
 
 green_echo "Updating system..."
