@@ -35,7 +35,8 @@ echo
 echo "The following Flatpaks will be installed:"
 echo "  Flatpak 1: Mission Center"
 echo "  Flatpak 2: Flatseal"
-echo "  Flatpak 3: GNOME Calculator"
+echo "  Flatpak 3: Warehouse"
+echo "  Flatpak 4: Flatsweep"
 echo
 
 printf "\033[33m👉 Install Adam's must-have Flatpaks? (y/N): \033[0m"
@@ -48,6 +49,9 @@ if [[ "$INSTALL_FLATPAKS" =~ ^([yY]|[yY][eE][sS])$ ]]; then
   green_echo "Installing Adam's Must-Have Flatpaks..."
 
   flatpak install -y flathub io.missioncenter.MissionCenter
+  com.github.tchx84.Flatseal
+  io.github.flattool.Warehouse
+  io.github.giantpinkrobots.flatsweep
 
 
 else
