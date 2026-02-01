@@ -16,7 +16,7 @@ green_echo "Hi Ricky Red Car 🚗 I made this interactive script for you to try,
 green_echo "Updating system..."
 sudo apt update && sudo apt upgrade -y
 
-##########################     Ubuntu Dock      ######################################
+#!#########################     Ubuntu Dock      ######################################
 
 green_echo "Fixing Ubuntu Dock..."
 gsettings set org.gnome.shell.extensions.dash-to-dock dock-position BOTTOM
