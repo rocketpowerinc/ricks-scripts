@@ -22,8 +22,10 @@ green_echo "Adding Flathub repository..."
 sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
 echo
-read -rp "👉 Install Adam's must-have Flatpaks? (y/N): " INSTALL_FLATPAKS
+printf "\033[33m👉 Install Adam's must-have Flatpaks? (y/N): \033[0m"
+read INSTALL_FLATPAKS
 echo
+
 
 if [[ "$INSTALL_FLATPAKS" =~ ^([yY]|[yY][eE][sS])$ ]]; then
   green_echo "Installing Adam's Must-Have Flatpaks..."
