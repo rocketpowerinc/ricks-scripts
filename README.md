@@ -1,8 +1,8 @@
 # ricks-scripts
 
 ### Ubuntu Bootstrap Quick Start
-1. Simply copy and paste this into terminal
-2. then type `bootstrap` and press enter
+1. Copy and paste this code block into terminal and press enter
+2. Step two simply type `bootstrap` and press enter
 
 ```
 sudo apt install git -y
