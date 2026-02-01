@@ -15,7 +15,7 @@ gsettings set org.gnome.shell.extensions.dash-to-dock dock-position BOTTOM
 gsettings set org.gnome.shell.extensions.dash-to-dock show-apps-at-top true
 gsettings set org.gnome.shell.extensions.dash-to-dock extend-height false
 
-green_echo "Installing Flatpak..."
+green_echo "Installing Flatpak Support..."
 sudo apt install -y flatpak
 
 green_echo "Adding Flathub repository..."
