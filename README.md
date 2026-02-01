@@ -2,7 +2,7 @@
 
 ### Ubuntu Bootstrap Quick Start
 1. Copy and paste the code block below into a terminal and press enter. The terminal window will close.
-2. Then simply open another terminal window and enter the command `bootstrap` and press enter
+2. Then simply open another terminal window and enter the command `bootstrap` and press enter. Then just follow the prompts
 
 ```
 sudo apt install git -y
