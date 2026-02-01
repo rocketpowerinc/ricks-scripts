@@ -11,7 +11,7 @@ green_echo() {
 }
 
 #!#########################     Update      ######################################
-green_echo "Hi Rick I made this interactive script for you to try, Enjoy!"
+green_echo "Hi Rick I made this interactive script for you to try, Enjoy!😀🚗"
 
 green_echo "Updating system..."
 sudo apt update && sudo apt upgrade -y
