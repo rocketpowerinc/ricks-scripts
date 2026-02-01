@@ -25,5 +25,5 @@ sleep 3
   echo "alias ${ALIAS_NAME}='${ALIAS_CMD}'"
 } >> "$BASHRC"
 
-source ~/.bashrc
+exit
 ```
