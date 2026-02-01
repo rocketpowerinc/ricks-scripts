@@ -20,7 +20,7 @@ sudo apt install -y flatpak
 green_echo "Adding Flathub repository..."
 sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
-green_echo "Installing Mission Center..."
+green_echo "Installing Mission Center Flatpak..."
 flatpak install -y flathub io.missioncenter.MissionCenter
 
 green_echo "Done! You may need to log out and log back in for GNOME changes to fully apply."
