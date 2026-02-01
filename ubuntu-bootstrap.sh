@@ -10,14 +10,9 @@ green_echo() {
 green_echo "Updating system..."
 sudo apt update && sudo apt upgrade -y
 
-green_echo "Installing GNOME extensions support and Dash to Dock..."
-sudo apt install -y gnome-shell-extension-dash-to-dock gnome-shell-extensions gnome-tweaks
-
-green_echo "Enabling Dash to Dock..."
-gnome-extensions enable dash-to-dock@micxgx.gmail.com || true
 
 green_echo "Moving dock to the bottom..."
-gsettings set org.gnome.shell.extensions.dash-to-dock dock-position 'BOTTOM'
+gsettings set org.gnome.shell.extensions.dash-to-dock dock-position BOTTOM
 
 green_echo "Installing Flatpak..."
 sudo apt install -y flatpak
