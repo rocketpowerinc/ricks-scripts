@@ -49,9 +49,9 @@ if [[ "$INSTALL_FLATPAKS" =~ ^([yY]|[yY][eE][sS])$ ]]; then
   green_echo "Installing Adam's Must-Have Flatpaks..."
 
   flatpak install -y flathub io.missioncenter.MissionCenter
-  com.github.tchx84.Flatseal
-  io.github.flattool.Warehouse
-  io.github.giantpinkrobots.flatsweep
+  flatpak install -y flathub com.github.tchx84.Flatseal
+  flatpak install -y flathub io.github.flattool.Warehouse
+  flatpak install -y flathub io.github.giantpinkrobots.flatsweep
 
 
 else
