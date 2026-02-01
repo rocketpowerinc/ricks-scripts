@@ -18,7 +18,7 @@ if grep -q "^alias ${ALIAS_NAME}=" "$BASHRC"; then
 fi
 
 echo -e "\033[1;32m➕ Adding '${ALIAS_NAME}' alias to ~/.bashrc\033[0m"
-sleep 3
+
 
 {
   echo
@@ -26,5 +26,5 @@ sleep 3
   echo "alias ${ALIAS_NAME}='${ALIAS_CMD}'"
 } >> "$BASHRC"
 
-exit
+sleep 3 && exit
 ```
