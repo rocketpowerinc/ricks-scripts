@@ -84,8 +84,6 @@ install_flatpaks() {
             percentage=$(( current_count * 100 / total_apps ))
             echo "# Installing $id ($current_count of $total_apps)..."
 
-            # --- TERMINAL OUTPUT ENABLED ---
-            # We use 'tee' to send the output to the terminal AND keep the logic flowing
             echo "--- Installing $id ---" > /dev/tty
             flatpak install -y flathub "$id" > /dev/tty 2>&1
 
@@ -113,18 +111,25 @@ while true; do
     THEME_LABEL="🌙 Dark Mode"
     [[ "$GTK_THEME" == "Adwaita-dark" ]] && THEME_LABEL="☀️ Light Mode"
 
+    # Changed --columns to 1 and adjusted width/height for a vertical look
     yad --form --title="$APP_TITLE" \
-        --width=400 --height=350 --center \
-        --columns=2 \
+        --width=300 --height=450 --center \
+        --columns=1 \
         --field="👋 Welcome":FBTN "bash -c 'echo \"Hello Ricky!\" > /dev/tty; yad --text=\"Hi Ricky!\" --button=OK --center'" \
         --field="⬆️ Update":FBTN "bash -c 'echo \"--- Starting System Update ---\" > /dev/tty; sudo apt update && sudo apt upgrade -y; yad --text=\"System Updated\" --button=OK --center'" \
         --field="🧲 Fix Dock":FBTN "bash -c 'echo \"Updating Dock Settings...\" > /dev/tty; gsettings set org.gnome.shell.extensions.dash-to-dock dock-position BOTTOM; gsettings set org.gnome.shell.extensions.dash-to-dock show-apps-at-top true; gsettings set org.gnome.shell.extensions.dash-to-dock extend-height false; echo \"Done.\" > /dev/tty'" \
         --field="📦 Flatpak Support":FBTN "bash -c 'echo \"Enabling Flatpak Support...\" > /dev/tty; sudo apt install -y flatpak && sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo; yad --text=\"Flatpak Ready\" --button=OK --center'" \
         --field="⭐ Install Flatpaks":FBTN "bash -c 'install_flatpaks'" \
-        --field="$THEME_LABEL":FBTN "bash -c 'toggle_theme'" \
+        --button="$THEME_LABEL:10" \
         --button="❌ Close":1
 
     ret=$?
+
+    if [[ $ret -eq 10 ]]; then
+        toggle_theme
+        continue
+    fi
+
     if [[ $ret -eq 1 || $ret -eq 252 ]]; then
         break
     fi
