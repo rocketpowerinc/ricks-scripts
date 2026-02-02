@@ -1,110 +1,130 @@
 #!/usr/bin/env bash
 
-export GTK_THEME=Adwaita-dark
+# File to store the current theme preference
+THEME_FILE="/tmp/ricky_theme_pref"
+[ ! -f "$THEME_FILE" ] && echo "Adwaita-dark" > "$THEME_FILE"
+
 APP_TITLE="Ricky Red Car Setup 🚗"
 
-#######################################
-# Progress runner (FIXED)
-#######################################
-run_with_progress() {
-  (
-    echo "10"
-    bash -c "$1"
-    echo "100"
-  ) | yad --progress \
-      --title="$APP_TITLE" \
-      --text="Working…" \
-      --percentage=0 \
-      --auto-close \
-      --auto-kill \
-      --center
-}
+# Export variables and functions for sub-shells
+export THEME_FILE APP_TITLE
 
 #######################################
 # Actions
 #######################################
-welcome() {
-  yad --title="$APP_TITLE" \
-      --text="Hi Ricky Red Car 🚗\n\nClick a button to run each task.\nNothing runs automatically." \
-      --button=OK \
-      --center
-}
 
-update_system() {
-  run_with_progress "sudo apt update && sudo apt upgrade -y"
-}
-
-fix_dock() {
-  run_with_progress "
-    gsettings set org.gnome.shell.extensions.dash-to-dock dock-position BOTTOM
-    gsettings set org.gnome.shell.extensions.dash-to-dock show-apps-at-top true
-    gsettings set org.gnome.shell.extensions.dash-to-dock extend-height false
-  "
-}
-
-flatpak_support() {
-  run_with_progress "
-    sudo apt install -y flatpak
-    sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-  "
+toggle_theme() {
+    CURRENT_THEME=$(cat "$THEME_FILE")
+    if [ "$CURRENT_THEME" == "Adwaita-dark" ]; then
+        echo "Adwaita" > "$THEME_FILE"
+    else
+        echo "Adwaita-dark" > "$THEME_FILE"
+    fi
+    # Signal the main loop to refresh
+    pkill -USR1 -f "$APP_TITLE"
 }
 
 install_flatpaks() {
-  yad --title="$APP_TITLE" \
-      --text="Install Adam's must-have Flatpaks?" \
-      --button="Install:0" \
-      --button="Cancel:1" \
-      --center
+    # Default to TRUE (checked) if no argument is passed
+    STATE=${1:-TRUE}
+    export GTK_THEME=$(cat "$THEME_FILE")
 
-  [ $? -ne 0 ] && return
+    # App list array
+    APPS=(
+        "$STATE" "Mail Viewer"       "EML and MSG file viewer"           "io.github.alescdb.mailviewer"
+        "$STATE" "Fred TV"           "Fast And Powerful IPTV App"        "dev.fredol.open-tv"
+        "$STATE" "gThumb"            "Image Viewer"                      "org.gnome.gThumb"
+        "$STATE" "ZapZap"            "WhatsApp Messenger"                "com.rtosta.zapzap"
+        "$STATE" "Ente Photos"       "Safe home for your photos"         "io.ente.photos"
+        "$STATE" "PDF Arranger"      "Merge, shuffle, and crop PDFs"     "com.github.jeromerobert.pdfarranger"
+        "$STATE" "Czkawka"           "Find duplicates, empty folders"    "com.github.qarmin.czkawka"
+        "$STATE" "Musicfetch"        "Download songs and tag them"       "net.fhannenheim.musicfetch"
+        "$STATE" "Shortwave"         "Listen to internet radio"          "de.haeckerfelix.Shortwave"
+        "$STATE" "Brasero"           "Create and copy CDs and DVDs"      "org.gnome.Brasero"
+        "$STATE" "Gapless"           "Play your music elegantly"         "com.github.neithern.g4music"
+        "$STATE" "Impression"        "Create bootable drives"            "io.gitlab.adhami3310.Impression"
+        "$STATE" "Haruna"            "Media player"                      "org.kde.haruna"
+        "$STATE" "LibreOffice"       "Productivity suite"                "org.libreoffice.LibreOffice"
+        "$STATE" "Extension Manager" "Install GNOME Extensions"          "com.mattjakeman.ExtensionManager"
+        "$STATE" "Gramps"            "Genealogical research"             "org.gramps_project.Gramps"
+    )
 
-  run_with_progress "
-    flatpak install -y flathub io.github.alescdb.mailviewer
-    flatpak install -y flathub dev.fredol.open-tv
-    flatpak install -y flathub org.gnome.gThumb
-    flatpak install -y flathub com.rtosta.zapzap
-    flatpak install -y flathub io.ente.photos
-    flatpak install -y flathub com.github.jeromerobert.pdfarranger
-    flatpak install -y flathub com.github.qarmin.czkawka
-    flatpak install -y flathub net.fhannenheim.musicfetch
-    flatpak install -y flathub de.haeckerfelix.Shortwave
-    flatpak install -y flathub org.gnome.Brasero
-    flatpak install -y flathub com.github.neithern.g4music
-    flatpak install -y flathub io.gitlab.adhami3310.Impression
-    flatpak install -y flathub org.kde.haruna
-    flatpak install -y flathub org.libreoffice.LibreOffice
-    flatpak install -y flathub com.mattjakeman.ExtensionManager
-    flatpak install -y flathub org.gramps_project.Gramps
-  "
+    choices=$(yad --title="$APP_TITLE" --list --checklist \
+        --width=850 --height=550 --center \
+        --column="Select" \
+        --column="App Name" \
+        --column="Description" \
+        --column="ID" \
+        --hide-column=4 \
+        --button="Select All:2" \
+        --button="Unselect All:3" \
+        --button="Install:0" \
+        --button="Cancel:1" \
+        "${APPS[@]}" \
+        --separator='|')
+
+    exit_status=$?
+
+    case $exit_status in
+        2) install_flatpaks "TRUE" ; return ;;
+        3) install_flatpaks "FALSE" ; return ;;
+        1) return ;;
+    esac
+
+    [[ -z "$choices" ]] && return
+
+    selected_ids=$(echo "$choices" | tr '|' '\n' | grep '\.')
+
+    if [[ -n "$selected_ids" ]]; then
+        # Count selected apps for the progress calculation
+        total_apps=$(echo "$selected_ids" | wc -l)
+        current_count=0
+
+        (
+        echo "# Starting installation..."
+        for id in $selected_ids; do
+            current_count=$((current_count + 1))
+            # Calculate percentage
+            percentage=$(( current_count * 100 / total_apps ))
+
+            echo "# Installing $id ($current_count of $total_apps)..."
+            flatpak install -y flathub "$id" > /dev/null 2>&1
+
+            echo "$percentage"
+        done
+        echo "# All apps installed! 🎉"
+        echo "100"
+        sleep 1
+        ) | yad --title="$APP_TITLE" --progress --width=400 --center --auto-close --percentage=0
+
+        yad --title="$APP_TITLE" --text="Installation Complete! 🚀" --button=OK --center
+    fi
 }
+
+export -f toggle_theme install_flatpaks
 
 #######################################
 # Main menu loop
 #######################################
+trap "pkill -f 'yad.*$APP_TITLE'; continue" USR1
+
 while true; do
-  yad --title="$APP_TITLE" \
-      --text="Choose an action:" \
-      --button="👋 Welcome":1 \
-      --button="⬆️ Update System":2 \
-      --button="🧲 Fix Dock":3 \
-      --button="📦 Flatpak Support":4 \
-      --button="⭐ Install Flatpaks":5 \
-      --button="❌ Exit":0 \
-      --width=420 \
-      --center
+    export GTK_THEME=$(cat "$THEME_FILE")
 
-  case $? in
-    1) welcome ;;
-    2) update_system ;;
-    3) fix_dock ;;
-    4) flatpak_support ;;
-    5) install_flatpaks ;;
-    0) break ;;
-  esac
+    THEME_LABEL="🌙 Dark Mode"
+    [[ "$GTK_THEME" == "Adwaita-dark" ]] && THEME_LABEL="☀️ Light Mode"
+
+    yad --form --title="$APP_TITLE" \
+        --text="<b>Ricky's Dashboard</b>" --text-align=center \
+        --width=400 --height=300 --center \
+        --columns=2 \
+        --field="👋 Welcome":FBTN "bash -c 'yad --text=\"Hi Ricky!\" --button=OK --center'" \
+        --field="⬆️ Update":FBTN "bash -c 'sudo apt update && sudo apt upgrade -y && yad --text=\"System Updated\" --button=OK --center'" \
+        --field="🧲 Fix Dock":FBTN "bash -c 'gsettings set org.gnome.shell.extensions.dash-to-dock dock-position BOTTOM; gsettings set org.gnome.shell.extensions.dash-to-dock show-apps-at-top true; gsettings set org.gnome.shell.extensions.dash-to-dock extend-height false'" \
+        --field="📦 Flatpak Support":FBTN "bash -c 'sudo apt install -y flatpak && sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo && yad --text=\"Flatpak Ready\" --button=OK --center'" \
+        --field="⭐ Install Flatpaks":FBTN "bash -c 'install_flatpaks'" \
+        --field="$THEME_LABEL":FBTN "bash -c 'toggle_theme'" \
+        --button="❌ Close":1
+
+    [[ $? -eq 1 ]] && break
 done
-
-yad --title="$APP_TITLE" \
-    --text="Done 🚀\nYou may need to log out and back in." \
-    --button=OK \
-    --center
-s
