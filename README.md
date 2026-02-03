@@ -1,15 +1,16 @@
 # ricks-scripts
 
+- THESE INSTRUCTIONS ARE THE SAME AS THE WEBSITE
+
 ### Ubuntu Bootstrap Quick Start
 1. Copy and paste the code block below into a terminal and press enter. The terminal window will close.
-2. Then simply open another terminal window and enter the command `bootstrap` and press enter. Then just follow the prompts
+2. Then simply open another terminal window and enter the command `dashboard` and press enter. Then just follow the prompts
 
 ```
-sudo apt install git -y
 
 BASHRC="$HOME/.bashrc"
-ALIAS_NAME="bootstrap"
-ALIAS_CMD='rm -rf "$HOME/Downloads/ricks-scripts" && git clone https://github.com/rocketpowerinc/ricks-scripts.git "$HOME/Downloads/ricks-scripts" && bash "$HOME/Downloads/ricks-scripts/ubuntu-bootstrap.sh"'
+ALIAS_NAME="dashboard"
+ALIAS_CMD='rm -rf "$HOME/Downloads/ricks-scripts" && git clone https://github.com/rocketpowerinc/ricks-scripts.git "$HOME/Downloads/ricks-scripts" && bash "$HOME/Downloads/ricks-scripts/dashboard.sh"'
 
 # Check if alias already exists
 if grep -q "^alias ${ALIAS_NAME}=" "$BASHRC"; then
