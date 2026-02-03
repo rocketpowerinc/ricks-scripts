@@ -95,6 +95,7 @@ while true; do
 
     yad --form --title="$APP_TITLE" \
         --width=350 --height=500 --center --scroll \
+        --field="<b>Dashboard</b>":LBL "" \
         --field="🌐 Website":FBTN 'xdg-open "https://homepage.craft.me/rickos"' \        --field="⬆️ Update":FBTN 'bash -c "sudo apt update && sudo apt upgrade -y; yad --text=\"System Updated\" --button=OK --center"' \
         --field="🧲 Fix Dock":FBTN 'gsettings set org.gnome.shell.extensions.dash-to-dock dock-position BOTTOM; gsettings set org.gnome.shell.extensions.dash-to-dock show-apps-at-top true; gsettings set org.gnome.shell.extensions.dash-to-dock extend-height false' \
         --field="📦 Flatpak Support":FBTN 'bash -c "sudo apt install -y flatpak && sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo; yad --text=\"Flatpak Ready\" --button=OK --center"' \
