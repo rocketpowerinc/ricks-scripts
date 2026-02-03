@@ -1,10 +1,7 @@
 # ricks-scripts
 
-- THESE INSTRUCTIONS ARE THE SAME AS THE WEBSITE
+- THIS COMMAND IS THE SAME AS THE WEBSITE
 
-### Ubuntu Bootstrap Quick Start
-1. Copy and paste the code block below into a terminal and press enter. The terminal window will close.
-2. Then simply open another terminal window and enter the command `dashboard` and press enter. Then just follow the prompts
 
 ```
 
