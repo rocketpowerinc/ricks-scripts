@@ -96,7 +96,7 @@ while true; do
 
     yad --form --title="$APP_TITLE" \
         --width=350 --height=500 --center --scroll \
-        --field="<b>Dashboard</b>":LBL "" \
+        --field="<b></b>":LBL "" \
         --field="🌐 Website":FBTN 'xdg-open "https://homepage.craft.me/rickos"' \
         --field="⬆️ Ubuntu - Update":FBTN "pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY bash -c 'apt update && apt upgrade -y && yad --text=\"System Updated\" --button=OK --center'" \
         --field="🧲 Ubuntu - Fix Dock":FBTN 'bash -c "gsettings set org.gnome.shell.extensions.dash-to-dock dock-position \"BOTTOM\"; gsettings set org.gnome.shell.extensions.dash-to-dock show-apps-at-top true; gsettings set org.gnome.shell.extensions.dash-to-dock extend-height false"' \
