@@ -16,11 +16,13 @@ APP_TITLE="Rick's Dashboard"
 #######################################
 
 install_flatpaks() {
-    # Re-import variables for subshell
     THEME_FILE="$HOME/.cache/ricky_theme_pref"
     APP_TITLE="Rick's Dashboard"
     local STATE=${1:-TRUE}
     export GTK_THEME=$(cat "$THEME_FILE")
+
+    # Ensure Flathub is added for the user before trying to install
+    flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
     local APPS=(
         "$STATE" "Mail Viewer"       "EML and MSG file viewer"           "io.github.alescdb.mailviewer"
@@ -62,7 +64,7 @@ install_flatpaks() {
             current_count=$((current_count + 1))
             percentage=$(( current_count * 100 / total_apps ))
             echo "# Installing $id ($current_count of $total_apps)..."
-            flatpak install -y flathub "$id"
+            flatpak install --user -y flathub "$id" --noninteractive
             echo "$percentage"
         done
         ) | yad --title="$APP_TITLE" --progress --width=400 --center --auto-close --percentage=0
@@ -80,7 +82,6 @@ toggle_theme() {
     pkill -USR1 -f "$APP_TITLE"
 }
 
-# Export function so 'bash -c' can see it
 export -f install_flatpaks
 
 #######################################
@@ -97,9 +98,9 @@ while true; do
         --width=350 --height=500 --center --scroll \
         --field="<b>Dashboard</b>":LBL "" \
         --field="🌐 Website":FBTN 'xdg-open "https://homepage.craft.me/rickos"' \
-        --field="⬆️ Update":FBTN 'bash -c "sudo apt update && sudo apt upgrade -y; yad --text=\"System Updated\" --button=OK --center"' \
+        --field="⬆️ Update":FBTN "pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY bash -c 'apt update && apt upgrade -y && yad --text=\"System Updated\" --button=OK --center'" \
         --field="🧲 Fix Dock":FBTN 'bash -c "gsettings set org.gnome.shell.extensions.dash-to-dock dock-position \"BOTTOM\"; gsettings set org.gnome.shell.extensions.dash-to-dock show-apps-at-top true; gsettings set org.gnome.shell.extensions.dash-to-dock extend-height false"' \
-        --field="📦 Flatpak Support":FBTN 'bash -c "sudo apt install -y flatpak && sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo; yad --text=\"Flatpak Ready\" --button=OK --center"' \
+        --field="📦 Flatpak Support":FBTN "pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY bash -c 'apt install -y flatpak && flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo && yad --text=\"Flatpak Ready\" --button=OK --center'" \
         --field="⭐ Install Flatpaks":FBTN 'bash -c install_flatpaks' \
         --button="$THEME_LABEL:10" \
         --button="❌ Close:1"
