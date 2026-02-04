@@ -6,9 +6,6 @@ if ! command -v yad &> /dev/null; then
     exit 1
 fi
 
-# 2. Setup Variables
-THEME_FILE="$HOME/.cache/ricky_theme_pref"
-[ ! -f "$THEME_FILE" ] && echo "Adwaita-dark" > "$THEME_FILE"
 APP_TITLE="AnduinOS Dashboard"
 
 #######################################
@@ -17,27 +14,26 @@ APP_TITLE="AnduinOS Dashboard"
 
 install_flatpaks() {
     local STATE=${1:-TRUE}
-    export GTK_THEME=$(cat "$THEME_FILE")
 
     flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
     local APPS=(
         "$STATE" "Mail Viewer"       "EML and MSG file viewer"           "io.github.alescdb.mailviewer"
         "$STATE" "Fred TV"           "Fast And Powerful IPTV App"        "dev.fredol.open-tv"
-        "$STATE" "gThumb"             "Image Viewer"                      "org.gnome.gThumb"
-        "$STATE" "ZapZap"             "WhatsApp Messenger"                "com.rtosta.zapzap"
-        "$STATE" "Ente Photos"        "Safe home for your photos"         "io.ente.photos"
-        "$STATE" "PDF Arranger"       "Merge, shuffle, and crop PDFs"     "com.github.jeromerobert.pdfarranger"
-        "$STATE" "Czkawka"             "Find duplicates, empty folders"    "com.github.qarmin.czkawka"
-        "$STATE" "Musicfetch"         "Download songs and tag them"       "net.fhannenheim.musicfetch"
-        "$STATE" "Shortwave"           "Listen to internet radio"           "de.haeckerfelix.Shortwave"
-        "$STATE" "Brasero"             "Create and copy CDs and DVDs"      "org.gnome.Brasero"
-        "$STATE" "Gapless"             "Play your music elegantly"         "com.github.neithern.g4music"
-        "$STATE" "Impression"         "Create bootable drives"            "io.gitlab.adhami3310.Impression"
-        "$STATE" "Haruna"             "Media player"                      "org.kde.haruna"
-        "$STATE" "LibreOffice"        "Productivity suite"                "org.libreoffice.LibreOffice"
-        "$STATE" "Extension Manager" "Install GNOME Extensions"           "com.mattjakeman.ExtensionManager"
-        "$STATE" "Gramps"             "Genealogical research"             "org.gramps_project.Gramps"
+        "$STATE" "gThumb"            "Image Viewer"                      "org.gnome.gThumb"
+        "$STATE" "ZapZap"            "WhatsApp Messenger"                "com.rtosta.zapzap"
+        "$STATE" "Ente Photos"       "Safe home for your photos"         "io.ente.photos"
+        "$STATE" "PDF Arranger"      "Merge, shuffle, and crop PDFs"     "com.github.jeromerobert.pdfarranger"
+        "$STATE" "Czkawka"           "Find duplicates, empty folders"    "com.github.qarmin.czkawka"
+        "$STATE" "Musicfetch"        "Download songs and tag them"       "net.fhannenheim.musicfetch"
+        "$STATE" "Shortwave"         "Listen to internet radio"          "de.haeckerfelix.Shortwave"
+        "$STATE" "Brasero"           "Create and copy CDs and DVDs"      "org.gnome.Brasero"
+        "$STATE" "Gapless"           "Play your music elegantly"         "com.github.neithern.g4music"
+        "$STATE" "Impression"        "Create bootable drives"            "io.gitlab.adhami3310.Impression"
+        "$STATE" "Haruna"            "Media player"                      "org.kde.haruna"
+        "$STATE" "LibreOffice"       "Productivity suite"                "org.libreoffice.LibreOffice"
+        "$STATE" "Extension Manager" "Install GNOME Extensions"          "com.mattjakeman.ExtensionManager"
+        "$STATE" "Gramps"            "Genealogical research"             "org.gramps_project.Gramps"
     )
 
     choices=$(yad --title="$APP_TITLE" --list --checklist \
@@ -65,6 +61,7 @@ install_flatpaks() {
             echo "$percentage"
         done
         ) | yad --title="$APP_TITLE" --progress --width=400 --center --auto-close --percentage=0
+
         yad --title="$APP_TITLE" --text="Installation Complete, first time installing a Flatpak you may have to log out/in!" --button=OK --center
     fi
 }
@@ -81,6 +78,7 @@ install_docker() {
         sudo usermod -aG docker "$USER"
         echo "100"
     ) | yad --title="$APP_TITLE" --progress --width=400 --center --auto-close --percentage=0
+
     yad --title="$APP_TITLE" --text="Docker Installed!" --button=OK --center
 }
 
@@ -123,16 +121,6 @@ EOF
     fi
 }
 
-toggle_theme() {
-    local CURRENT_THEME=$(cat "$THEME_FILE")
-    if [ "$CURRENT_THEME" == "Adwaita-dark" ]; then
-        echo "Adwaita" > "$THEME_FILE"
-    else
-        echo "Adwaita-dark" > "$THEME_FILE"
-    fi
-    pkill -USR1 -f "$APP_TITLE"
-}
-
 export -f install_flatpaks
 export -f install_docker
 export -f setup_filebrowser
@@ -140,13 +128,8 @@ export -f setup_filebrowser
 #######################################
 # Main Menu
 #######################################
-trap "pkill -f 'yad.*$APP_TITLE'; continue" USR1
 
 while true; do
-    export GTK_THEME=$(cat "$THEME_FILE")
-    THEME_LABEL="🌙 Dark Mode"
-    [[ "$GTK_THEME" == "Adwaita-dark" ]] && THEME_LABEL="☀️ Light Mode"
-
     yad --form --title="$APP_TITLE" \
         --width=350 --height=450 --center --scroll \
         --field="<b></b>":LBL "" \
@@ -156,10 +139,8 @@ while true; do
         --field="⭐ Flatpak List":FBTN 'bash -c install_flatpaks' \
         --field="🐳 Docker - Setup":FBTN 'bash -c install_docker' \
         --field="📁 Docker - File Browser Server":FBTN 'bash -c setup_filebrowser' \
-        --button="$THEME_LABEL:10" \
         --button="❌ Close:1"
 
     ret=$?
-    [[ $ret -eq 10 ]] && { toggle_theme; continue; }
     [[ $ret -eq 1 || $ret -eq 252 ]] && break
 done
