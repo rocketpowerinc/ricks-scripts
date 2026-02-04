@@ -135,7 +135,7 @@ while true; do
         --field="<b></b>":LBL "" \
         --field="🌐 RickOS Website":FBTN 'xdg-open "https://homepage.craft.me/rickos"' \
         --field="⬆️ AnduinOS - Update":FBTN "pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY bash -c 'apt update && apt upgrade -y && yad --text=\"System Updated\" --button=OK --center'" \
-        --field="♻️ AnduinOS - Factory Reset":FBTN "pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY bash -c 'do-anduinos-autorepair && yad --text=\"Factory Reset/Repair Complete\" --button=OK --center'" \
+        --field="♻️ AnduinOS - Factory Reset":FBTN 'bash -c "do-anduinos-autorepair && yad --text=\"Factory Reset/Repair Complete\" --button=OK --center"' \
         --field="⭐ Flatpak List":FBTN 'bash -c install_flatpaks' \
         --field="🐳 Docker - Setup":FBTN 'bash -c install_docker' \
         --field="📁 Docker - File Browser Server":FBTN 'bash -c setup_filebrowser' \
