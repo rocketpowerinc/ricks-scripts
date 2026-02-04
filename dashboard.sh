@@ -65,7 +65,7 @@ install_flatpaks() {
             echo "$percentage"
         done
         ) | yad --title="$APP_TITLE" --progress --width=400 --center --auto-close --percentage=0
-        yad --title="$APP_TITLE" --text="Installation Complete!" --button=OK --center
+        yad --title="$APP_TITLE" --text="Installation Complete, first time installing a Flatpak you may have to log out/in!" --button=OK --center
     fi
 }
 
