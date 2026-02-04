@@ -16,8 +16,6 @@ APP_TITLE="Rick's Dashboard"
 #######################################
 
 install_flatpaks() {
-    THEME_FILE="$HOME/.cache/ricky_theme_pref"
-    APP_TITLE="Rick's Dashboard"
     local STATE=${1:-TRUE}
     export GTK_THEME=$(cat "$THEME_FILE")
 
@@ -30,11 +28,11 @@ install_flatpaks() {
         "$STATE" "ZapZap"             "WhatsApp Messenger"                "com.rtosta.zapzap"
         "$STATE" "Ente Photos"        "Safe home for your photos"         "io.ente.photos"
         "$STATE" "PDF Arranger"       "Merge, shuffle, and crop PDFs"     "com.github.jeromerobert.pdfarranger"
-        "$STATE" "Czkawka"            "Find duplicates, empty folders"    "com.github.qarmin.czkawka"
+        "$STATE" "Czkawka"             "Find duplicates, empty folders"    "com.github.qarmin.czkawka"
         "$STATE" "Musicfetch"         "Download songs and tag them"       "net.fhannenheim.musicfetch"
-        "$STATE" "Shortwave"          "Listen to internet radio"           "de.haeckerfelix.Shortwave"
-        "$STATE" "Brasero"            "Create and copy CDs and DVDs"      "org.gnome.Brasero"
-        "$STATE" "Gapless"            "Play your music elegantly"         "com.github.neithern.g4music"
+        "$STATE" "Shortwave"           "Listen to internet radio"           "de.haeckerfelix.Shortwave"
+        "$STATE" "Brasero"             "Create and copy CDs and DVDs"      "org.gnome.Brasero"
+        "$STATE" "Gapless"             "Play your music elegantly"         "com.github.neithern.g4music"
         "$STATE" "Impression"         "Create bootable drives"            "io.gitlab.adhami3310.Impression"
         "$STATE" "Haruna"             "Media player"                      "org.kde.haruna"
         "$STATE" "LibreOffice"        "Productivity suite"                "org.libreoffice.LibreOffice"
@@ -110,7 +108,6 @@ services:
     restart: always
 EOF
 
-    # ONLY pkexec the docker command
     pkexec docker compose -f "$YAML_FILE" up -d
 
     if [ $? -eq 0 ]; then
@@ -119,8 +116,7 @@ EOF
             echo "60"; echo "# Starting Browser..." ; sleep 1
             echo "100"; echo "# Done!"
         ) | yad --title="$APP_TITLE" --progress --auto-close --width=300 --center
-        
-        # Now xdg-open runs as 'ricky' (the user), not root
+
         xdg-open "http://localhost:3000/filebrowser/files"
     else
         yad --error --text="Docker failed to start." --center
@@ -152,12 +148,10 @@ while true; do
     [[ "$GTK_THEME" == "Adwaita-dark" ]] && THEME_LABEL="☀️ Light Mode"
 
     yad --form --title="$APP_TITLE" \
-        --width=350 --height=550 --center --scroll \
+        --width=350 --height=450 --center --scroll \
         --field="<b></b>":LBL "" \
         --field="🌐 Website":FBTN 'xdg-open "https://homepage.craft.me/rickos"' \
         --field="⬆️ Ubuntu - Update":FBTN "pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY bash -c 'apt update && apt upgrade -y && yad --text=\"System Updated\" --button=OK --center'" \
-        --field="🧲 Ubuntu - Fix Dock":FBTN 'bash -c "gsettings set org.gnome.shell.extensions.dash-to-dock dock-position \"BOTTOM\"; gsettings set org.gnome.shell.extensions.dash-to-dock show-apps-at-top true; gsettings set org.gnome.shell.extensions.dash-to-dock extend-height false"' \
-        --field="📦 Ubuntu - Enable Flatpak Support":FBTN "pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY bash -c 'apt install -y flatpak && flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo && yad --text=\"Flatpak Ready\" --button=OK --center'" \
         --field="⭐ Universal Flatpak List":FBTN 'bash -c install_flatpaks' \
         --field="🐳 Universal Docker Setup":FBTN 'bash -c install_docker' \
         --field="📁 Docker File Browser":FBTN 'bash -c setup_filebrowser' \
