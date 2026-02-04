@@ -87,15 +87,12 @@ install_docker() {
 }
 
 setup_filebrowser() {
-    # 1. Define Absolute Paths
     local BASE_DIR="$HOME/Docker/Filebrowser"
     local CONF_DIR="$BASE_DIR/config"
     local YAML_FILE="$BASE_DIR/docker-compose.yaml"
 
-    # 2. Create directories and ensure user ownership
     mkdir -p "$CONF_DIR"
 
-    # 3. Create the YAML file using absolute paths for volumes
     cat <<EOF > "$YAML_FILE"
 services:
   filebrowser:
@@ -113,14 +110,20 @@ services:
     restart: always
 EOF
 
-    # 4. Run the command exactly like your working terminal command
-    # We use pkexec to handle the sudo requirement in the GUI
-    if pkexec docker compose -f "$YAML_FILE" up -d; then
-        yad --title="$APP_TITLE" --text="File Browser is starting up..." --timeout=3 --no-buttons --center
-        sleep 2
-        xdg-open "http://localhost:3000/filebrowser"
+    # ONLY pkexec the docker command
+    pkexec docker compose -f "$YAML_FILE" up -d
+
+    if [ $? -eq 0 ]; then
+        (
+            echo "10"; echo "# Initializing..." ; sleep 1
+            echo "60"; echo "# Starting Browser..." ; sleep 1
+            echo "100"; echo "# Done!"
+        ) | yad --title="$APP_TITLE" --progress --auto-close --width=300 --center
+        
+        # Now xdg-open runs as 'ricky' (the user), not root
+        xdg-open "http://localhost:3000/filebrowser/files"
     else
-        yad --error --title="$APP_TITLE" --text="Failed to start. Try running 'docker rm -f filebrowser' in terminal." --center
+        yad --error --text="Docker failed to start." --center
     fi
 }
 
