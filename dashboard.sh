@@ -21,7 +21,6 @@ install_flatpaks() {
     local STATE=${1:-TRUE}
     export GTK_THEME=$(cat "$THEME_FILE")
 
-    # Ensure Flathub is added for the user before trying to install
     flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
     local APPS=(
@@ -77,26 +76,27 @@ install_docker() {
         echo "# Downloading Docker installation script..."
         curl -fsSL https://get.docker.com -o /tmp/get-docker.sh
         echo "30"
-
         echo "# Installing Docker (Authentication Required)..."
         pkexec sh /tmp/get-docker.sh
         echo "80"
-
         echo "# Configuring user groups..."
         sudo usermod -aG docker "$USER"
         echo "100"
     ) | yad --title="$APP_TITLE" --progress --width=400 --center --auto-close --percentage=0
-
-    yad --title="$APP_TITLE" --text="Docker Installed!\n\nYou should log out and back in eventually, but the buttons will use sudo for now." --button=OK --center
+    yad --title="$APP_TITLE" --text="Docker Installed! Logout/In recommended." --button=OK --center
 }
 
 setup_filebrowser() {
-    # 1. Setup Directories
-    TARGET_DIR="$HOME/Docker/Filebrowser"
-    mkdir -p "$TARGET_DIR"
+    # 1. Define Absolute Paths
+    local BASE_DIR="$HOME/Docker/Filebrowser"
+    local CONF_DIR="$BASE_DIR/config"
+    local YAML_FILE="$BASE_DIR/docker-compose.yaml"
 
-    # 2. Create docker-compose.yaml
-    cat <<EOF > "$TARGET_DIR/docker-compose.yaml"
+    # 2. Create directories and ensure user ownership
+    mkdir -p "$CONF_DIR"
+
+    # 3. Create the YAML file using absolute paths for volumes
+    cat <<EOF > "$YAML_FILE"
 services:
   filebrowser:
     image: hurlenko/filebrowser:latest
@@ -105,22 +105,22 @@ services:
     ports:
       - 3000:8080
     volumes:
-      - "${HOME}:/data"
-      - ./config:/config
+      - "$HOME:/data"
+      - "$CONF_DIR:/config"
     environment:
       - FB_BASEURL=/filebrowser
       - FB_NOAUTH=true
     restart: always
 EOF
 
-    # 3. Launch Docker Compose with sudo
-    # We use pkexec to handle the password prompt through a GUI
-    cd "$TARGET_DIR"
-    if pkexec docker compose up -d; then
+    # 4. Run the command exactly like your working terminal command
+    # We use pkexec to handle the sudo requirement in the GUI
+    if pkexec docker compose -f "$YAML_FILE" up -d; then
         yad --title="$APP_TITLE" --text="File Browser is starting up..." --timeout=3 --no-buttons --center
+        sleep 2
         xdg-open "http://localhost:3000/filebrowser"
     else
-        yad --error --title="$APP_TITLE" --text="Failed to start Docker Compose. Check your installation." --center
+        yad --error --title="$APP_TITLE" --text="Failed to start. Try running 'docker rm -f filebrowser' in terminal." --center
     fi
 }
 
