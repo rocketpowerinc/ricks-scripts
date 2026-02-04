@@ -150,10 +150,11 @@ while true; do
     yad --form --title="$APP_TITLE" \
         --width=350 --height=450 --center --scroll \
         --field="<b></b>":LBL "" \
-        --field="🌐 Website":FBTN 'xdg-open "https://homepage.craft.me/rickos"' \
-        --field="⬆️ Ubuntu - Update":FBTN "pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY bash -c 'apt update && apt upgrade -y && yad --text=\"System Updated\" --button=OK --center'" \
-        --field="⭐ Universal Flatpak List":FBTN 'bash -c install_flatpaks' \
-        --field="🐳 Universal Docker Setup":FBTN 'bash -c install_docker' \
+        --field="🌐 RickOS Website":FBTN 'xdg-open "https://homepage.craft.me/rickos"' \
+        --field="⬆️ AnduinOS - Update":FBTN "pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY bash -c 'apt update && apt upgrade -y && yad --text=\"System Updated\" --button=OK --center'" \
+        --field="♻️ AnduinOS - Factory Reset":FBTN "pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY bash -c 'do-anduinos-autorepair && yad --text=\"Factory Reset/Repair Complete\" --button=OK --center'" \
+        --field="⭐ Flatpak List":FBTN 'bash -c install_flatpaks' \
+        --field="🐳 Docker Setup":FBTN 'bash -c install_docker' \
         --field="📁 Docker File Browser":FBTN 'bash -c setup_filebrowser' \
         --button="$THEME_LABEL:10" \
         --button="❌ Close:1"
