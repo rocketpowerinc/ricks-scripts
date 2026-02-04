@@ -77,16 +77,16 @@ install_docker() {
         echo "# Downloading Docker installation script..."
         curl -fsSL https://get.docker.com -o /tmp/get-docker.sh
         echo "30"
-        
+
         echo "# Installing Docker (Authentication Required)..."
         pkexec sh /tmp/get-docker.sh
         echo "80"
-        
+
         echo "# Configuring user groups..."
         sudo usermod -aG docker "$USER"
         echo "100"
     ) | yad --title="$APP_TITLE" --progress --width=400 --center --auto-close --percentage=0
-    
+
     yad --title="$APP_TITLE" --text="Docker Installed!\n\nYou should log out and back in eventually, but the buttons will use sudo for now." --button=OK --center
 }
 
