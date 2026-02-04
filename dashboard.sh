@@ -77,19 +77,50 @@ install_docker() {
         echo "# Downloading Docker installation script..."
         curl -fsSL https://get.docker.com -o /tmp/get-docker.sh
         echo "30"
-
+        
         echo "# Installing Docker (Authentication Required)..."
-        # pkexec allows the script to run as root via a GUI password prompt
         pkexec sh /tmp/get-docker.sh
         echo "80"
-
+        
         echo "# Configuring user groups..."
-        # Add current user to docker group so sudo isn't needed later
         sudo usermod -aG docker $USER
         echo "100"
     ) | yad --title="$APP_TITLE" --progress --width=400 --center --auto-close --percentage=0
+    
+    yad --title="$APP_TITLE" --text="Docker Installation Complete!\n\nYou MUST log out and back in for changes to take effect before using Docker buttons." --button=OK --center
+}
 
-    yad --title="$APP_TITLE" --text="Docker Installation Complete!\n\nNote: You may need to log out and back in for group changes to take effect." --button=OK --center
+setup_filebrowser() {
+    # 1. Setup Directories
+    TARGET_DIR="$HOME/Docker/Filebrowser"
+    mkdir -p "$TARGET_DIR"
+
+    # 2. Create docker-compose.yaml
+    cat <<EOF > "$TARGET_DIR/docker-compose.yaml"
+services:
+  filebrowser:
+    image: hurlenko/filebrowser:latest
+    container_name: filebrowser
+    user: "$(id -u):$(id -g)"
+    ports:
+      - 3000:8080
+    volumes:
+      - "${HOME}:/data"
+      - ./config:/config
+    environment:
+      - FB_BASEURL=/filebrowser
+      - FB_NOAUTH=true
+    restart: always
+EOF
+
+    # 3. Launch Docker Compose
+    cd "$TARGET_DIR"
+    if docker compose up -d; then
+        yad --title="$APP_TITLE" --text="File Browser is starting up..." --timeout=3 --no-buttons --center
+        xdg-open "http://localhost:3000/filebrowser"
+    else
+        yad --error --title="$APP_TITLE" --text="Failed to start Docker. Ensure you have logged out/in after installing Docker." --center
+    fi
 }
 
 toggle_theme() {
@@ -104,6 +135,7 @@ toggle_theme() {
 
 export -f install_flatpaks
 export -f install_docker
+export -f setup_filebrowser
 
 #######################################
 # Main Menu
@@ -116,7 +148,7 @@ while true; do
     [[ "$GTK_THEME" == "Adwaita-dark" ]] && THEME_LABEL="☀️ Light Mode"
 
     yad --form --title="$APP_TITLE" \
-        --width=350 --height=500 --center --scroll \
+        --width=350 --height=550 --center --scroll \
         --field="<b></b>":LBL "" \
         --field="🌐 Website":FBTN 'xdg-open "https://homepage.craft.me/rickos"' \
         --field="⬆️ Ubuntu - Update":FBTN "pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY bash -c 'apt update && apt upgrade -y && yad --text=\"System Updated\" --button=OK --center'" \
@@ -124,6 +156,7 @@ while true; do
         --field="📦 Ubuntu - Enable Flatpak Support":FBTN "pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY bash -c 'apt install -y flatpak && flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo && yad --text=\"Flatpak Ready\" --button=OK --center'" \
         --field="⭐ Universal Flatpak List":FBTN 'bash -c install_flatpaks' \
         --field="🐳 Universal Docker Setup":FBTN 'bash -c install_docker' \
+        --field="📁 Docker File Browser":FBTN 'bash -c setup_filebrowser' \
         --button="$THEME_LABEL:10" \
         --button="❌ Close:1"
 
