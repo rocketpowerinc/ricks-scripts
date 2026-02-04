@@ -83,7 +83,7 @@ install_docker() {
         sudo usermod -aG docker "$USER"
         echo "100"
     ) | yad --title="$APP_TITLE" --progress --width=400 --center --auto-close --percentage=0
-    yad --title="$APP_TITLE" --text="Docker Installed! Logout/In recommended." --button=OK --center
+    yad --title="$APP_TITLE" --text="Docker Installed!" --button=OK --center
 }
 
 setup_filebrowser() {
