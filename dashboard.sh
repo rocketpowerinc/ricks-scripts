@@ -83,11 +83,11 @@ install_docker() {
         echo "80"
         
         echo "# Configuring user groups..."
-        sudo usermod -aG docker $USER
+        sudo usermod -aG docker "$USER"
         echo "100"
     ) | yad --title="$APP_TITLE" --progress --width=400 --center --auto-close --percentage=0
     
-    yad --title="$APP_TITLE" --text="Docker Installation Complete!\n\nYou MUST log out and back in for changes to take effect before using Docker buttons." --button=OK --center
+    yad --title="$APP_TITLE" --text="Docker Installed!\n\nYou should log out and back in eventually, but the buttons will use sudo for now." --button=OK --center
 }
 
 setup_filebrowser() {
@@ -113,13 +113,14 @@ services:
     restart: always
 EOF
 
-    # 3. Launch Docker Compose
+    # 3. Launch Docker Compose with sudo
+    # We use pkexec to handle the password prompt through a GUI
     cd "$TARGET_DIR"
-    if docker compose up -d; then
+    if pkexec docker compose up -d; then
         yad --title="$APP_TITLE" --text="File Browser is starting up..." --timeout=3 --no-buttons --center
         xdg-open "http://localhost:3000/filebrowser"
     else
-        yad --error --title="$APP_TITLE" --text="Failed to start Docker. Ensure you have logged out/in after installing Docker." --center
+        yad --error --title="$APP_TITLE" --text="Failed to start Docker Compose. Check your installation." --center
     fi
 }
 
