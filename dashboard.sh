@@ -102,6 +102,7 @@ while true; do
         --field="🧲 Ubuntu - Fix Dock":FBTN 'bash -c "gsettings set org.gnome.shell.extensions.dash-to-dock dock-position \"BOTTOM\"; gsettings set org.gnome.shell.extensions.dash-to-dock show-apps-at-top true; gsettings set org.gnome.shell.extensions.dash-to-dock extend-height false"' \
         --field="📦 Ubuntu - Enable Flatpak Support":FBTN "pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY bash -c 'apt install -y flatpak && flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo && yad --text=\"Flatpak Ready\" --button=OK --center'" \
         --field="⭐ Universal Flatpak List":FBTN 'bash -c install_flatpaks' \
+        --field="🐳 Universal Docker Setup":FBTN "bash -c 'cd ~ && curl -fsSL https://get.docker.com -o get-docker.sh && chmod +x get-docker.sh && pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY sh get-docker.sh'" \
         --button="$THEME_LABEL:10" \
         --button="❌ Close:1"
 
