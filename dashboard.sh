@@ -72,6 +72,26 @@ install_flatpaks() {
     fi
 }
 
+install_docker() {
+    (
+        echo "# Downloading Docker installation script..."
+        curl -fsSL https://get.docker.com -o /tmp/get-docker.sh
+        echo "30"
+
+        echo "# Installing Docker (Authentication Required)..."
+        # pkexec allows the script to run as root via a GUI password prompt
+        pkexec sh /tmp/get-docker.sh
+        echo "80"
+
+        echo "# Configuring user groups..."
+        # Add current user to docker group so sudo isn't needed later
+        sudo usermod -aG docker $USER
+        echo "100"
+    ) | yad --title="$APP_TITLE" --progress --width=400 --center --auto-close --percentage=0
+
+    yad --title="$APP_TITLE" --text="Docker Installation Complete!\n\nNote: You may need to log out and back in for group changes to take effect." --button=OK --center
+}
+
 toggle_theme() {
     local CURRENT_THEME=$(cat "$THEME_FILE")
     if [ "$CURRENT_THEME" == "Adwaita-dark" ]; then
@@ -83,6 +103,7 @@ toggle_theme() {
 }
 
 export -f install_flatpaks
+export -f install_docker
 
 #######################################
 # Main Menu
@@ -102,7 +123,7 @@ while true; do
         --field="🧲 Ubuntu - Fix Dock":FBTN 'bash -c "gsettings set org.gnome.shell.extensions.dash-to-dock dock-position \"BOTTOM\"; gsettings set org.gnome.shell.extensions.dash-to-dock show-apps-at-top true; gsettings set org.gnome.shell.extensions.dash-to-dock extend-height false"' \
         --field="📦 Ubuntu - Enable Flatpak Support":FBTN "pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY bash -c 'apt install -y flatpak && flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo && yad --text=\"Flatpak Ready\" --button=OK --center'" \
         --field="⭐ Universal Flatpak List":FBTN 'bash -c install_flatpaks' \
-        --field="🐳 Universal Docker Setup":FBTN "gnome-terminal -- bash -c 'curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh; exec bash'" \
+        --field="🐳 Universal Docker Setup":FBTN 'bash -c install_docker' \
         --button="$THEME_LABEL:10" \
         --button="❌ Close:1"
 
