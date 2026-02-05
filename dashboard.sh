@@ -137,6 +137,7 @@ while true; do
         --field="⬆️ AnduinOS - Update":FBTN "pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY bash -c 'apt update && apt upgrade -y && yad --text=\"System Updated\" --button=OK --center'" \
         --field="♻️ AnduinOS - Factory Reset":FBTN 'bash -c "do-anduinos-autorepair && yad --text=\"Factory Reset/Repair Complete\" --button=OK --center"' \
         --field="⭐ Flatpak List":FBTN 'bash -c install_flatpaks' \
+        --field="🛠️ Chris Titus - LinUtil":FBTN "x-terminal-emulator -e bash -c 'curl -fsSL https://christitus.com/linux | sh'" \
         --field="🐳 Docker - Setup":FBTN 'bash -c install_docker' \
         --field="📁 Docker - File Browser Server":FBTN 'bash -c setup_filebrowser' \
         --button="❌ Close:1"
