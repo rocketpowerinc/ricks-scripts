@@ -135,7 +135,7 @@ while true; do
         --field="<b></b>":LBL "" \
         --field="🌐 RickOS Website":FBTN 'xdg-open "https://homepage.craft.me/rickos"' \
         --field="🐧 TuxMate - Bulk App Installer":FBTN 'xdg-open "https://tuxmate.com/"' \
-        --field="🧸 Linux Toys":FBTN "x-terminal-emulator -e bash -c 'curl -fsSL https://linux.toys/install.sh | bash'" \
+        --field="🧸 Linux Toys - Install":FBTN "x-terminal-emulator -e bash -c 'curl -fsSL https://linux.toys/install.sh | bash'" \
         --field="⬆️ AnduinOS - Update":FBTN "pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY bash -c 'apt update && apt upgrade -y && yad --text=\"System Updated\" --button=OK --center'" \
         --field="♻️ AnduinOS - Factory Reset":FBTN 'bash -c "do-anduinos-autorepair && yad --text=\"Factory Reset/Repair Complete\" --button=OK --center"' \
         --field="⭐ Flatpak List":FBTN 'bash -c install_flatpaks' \
