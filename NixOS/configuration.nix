@@ -160,6 +160,8 @@
   services.flatpak = {
     enable = true;
 
+    remotes = [{ name = "flathub"; location = "https://dl.flathub.org/repo/flathub.flatpakrepo"; }];
+
     ### ⭐ ADDED example flatpaks (edit as you want)
     packages = [
       "org.gnome.Boxes"
