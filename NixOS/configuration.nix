@@ -24,7 +24,9 @@
     dconf-editor
     gnome-tweaks
     gnome-extension-manager
+    gnomeExtensions.open-bar
     gnomeExtensions.dash-to-dock
+    gnomeExtensions.dash-to-panel
     gnomeExtensions.accent-gtk-theme
     gnomeExtensions.accent-icons-theme
     gnomeExtensions.arcmenu
