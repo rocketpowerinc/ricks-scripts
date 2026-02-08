@@ -31,7 +31,6 @@
     gnomeExtensions.blur-my-shell
     gnomeExtensions.clipboard-indicator
     gnomeExtensions.gtk4-desktop-icons-ng-ding
-    gnomeExtensions.lock-keys
     gnomeExtensions.media-controls
     gnomeExtensions.network-stats
     gnomeExtensions.removable-drive-menu
@@ -45,7 +44,7 @@
 ################################################################
 ################################################################
 
-  
+
   # Bootloader
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
